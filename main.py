@@ -1,8 +1,9 @@
 # Импортируем необходимые классы.
 import logging
 import fandom
+from random import choice
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
-from config import BOT_TOKEN
+from config import BOT_TOKEN, games
 
 # Запускаем логгирование
 logging.basicConfig(
@@ -29,11 +30,31 @@ async def random_state(update, context):
                                         f'- если название состоит из нескольких слов)')
 
 
+async def random_game(update, context):
+    await update.message.reply_text(choice(games))
+
+
+async def short_find(update, context):
+    try:
+        fandom.set_wiki(context.args[0].lower())
+        page = fandom.page(pageid=fandom.search(context.args[0], results=1)[0][1])
+        try:
+            await update.message.reply_text(page.summary)
+        except Exception:
+            await update.message.reply_text(f'Мы не смогли вытащить данные с сайта вот ссылка на источник: {page.url}')
+    except Exception:
+        await update.message.reply_text(f'Мы не смогли найти сайт по вашему запросу,'
+                                        f' проверте правильно ли вы написали название (англискими буквами и через '
+                                        f'- если название состоит из нескольких слов)')
+
+
 def main():
     application = Application.builder().token(BOT_TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("random_state", random_state))
+    application.add_handler(CommandHandler("random_game", random_game))
+    application.add_handler(CommandHandler("short_find", short_find))
 
     application.run_polling()
 
