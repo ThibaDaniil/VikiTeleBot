@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
+fandom.set_lang('ru')
 
 async def start(update, context):
     await update.message.reply_text("Привет, я бот помошник по Viki")
@@ -48,6 +48,20 @@ async def short_find(update, context):
                                         f'- если название состоит из нескольких слов)')
 
 
+async def find_info_about(update, context):
+    try:
+        fandom.set_wiki(context.args[0].lower())
+        page = fandom.page(pageid=(fandom.search(context.args[1], results=1)[0][1]))
+        try:
+            await update.message.reply_text(page.content['content'])
+        except Exception:
+            await update.message.reply_text(f'Мы не смогли вытащить данные с сайта вот ссылка на источник: {page.url}')
+    except Exception:
+        await update.message.reply_text(f'Мы не смогли найти сайт по вашему запросу,'
+                                        f' проверте правильно ли вы написали название (англискими буквами и через '
+                                        f'- если название состоит из нескольких слов)')
+
+
 def main():
     application = Application.builder().token(BOT_TOKEN).build()
 
@@ -55,6 +69,7 @@ def main():
     application.add_handler(CommandHandler("random_state", random_state))
     application.add_handler(CommandHandler("random_game", random_game))
     application.add_handler(CommandHandler("short_find", short_find))
+    application.add_handler(CommandHandler("find_info_about", find_info_about))
 
     application.run_polling()
 
