@@ -21,7 +21,8 @@ START_ROTES, END_ROUTES = range(2)
 
 
 async def start(update, context):
-    await update.message.reply_text("Привет, я бот помошник по Viki")
+    await update.message.reply_text("Привет, я бот помошник по Viki.\n"
+                                    "Напишите /help для дополнительной информации")
 
 
 async def random_state(update, context):
