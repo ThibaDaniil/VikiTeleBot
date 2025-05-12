@@ -41,6 +41,17 @@ async def random_game(update, context):
     await update.message.reply_text(choice(games))
 
 
+async def help(update, context):
+    await update.message.reply_text("/start - приветствует вас\n"
+                                    "/random_state - находит случайную статью из указаной вами игры (параметры: название игры)\n"
+                                    "/random_game - выводит ссылку на случайную игру\n"
+                                    "/short_find - выводит краткое описание игры (параметры: название игры)\n"
+                                    "/find_info_about - выводит информацию конкретной статьи про игру (параметры: название игры, название статьи\n"
+                                    "/find - выводит полное описание игры\n"
+                                    "/top10 - выводит топ 10 самых популярных статей на сайте (можно переходить по играм)\n"
+                                    "/closeTop10 - прекращает взаимодействие с меню top10\n")
+
+
 async def short_find(update, context):
     try:
         fandom.set_wiki(context.args[0].lower())
@@ -298,6 +309,7 @@ def main():
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("random_state", random_state))
+    application.add_handler(CommandHandler("help", help))
     application.add_handler(CommandHandler("random_game", random_game))
     application.add_handler(CommandHandler("short_find", short_find))
     application.add_handler(CommandHandler("find_info_about", find_info_about))
